@@ -1,5 +1,6 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
 
 function App() {
   //initialized the time consatnt
@@ -12,6 +13,8 @@ function App() {
   const [gameRunning, setGameRunning] = useState(false);
   //A use state to declare the word count and a setWordCount function to update the word count
   const [wordCount, setWordCount] = useState(0);
+  //A use ref to get the text area element
+  const textAreaRef = useRef(null);
 
  
 //Afunction that gets the word  value from the text area
@@ -31,11 +34,13 @@ function App() {
     setTimeRemaining(STARTING_TIME);
     setText("");
     setWordCount(0);
+    textAreaRef.current.disabled = false;
+    textAreaRef.current.focus();
   }
   
   function endGame() {
-    setWordCount(calculateWordLength(text))
-    setGameRunning(false)
+    setWordCount(calculateWordLength(text));
+    setGameRunning(false);
 }
 
 
@@ -45,7 +50,7 @@ useEffect(() => {
           setTimeRemaining(time => time - 1)
       }, 1000)
   } else if(timeRemaining === 0) {
-      endGame()
+      endGame();
   }
   
 }, [timeRemaining, gameRunning])
@@ -56,7 +61,7 @@ useEffect(() => {
         <h1>Typing Game</h1>
         <p>How fast can you type?</p>
         <textarea placeholder="Start Typing..." onChange={handleChange} 
-        value={text} disabled={!gameRunning} />
+        value={text} disabled={!gameRunning} ref={textAreaRef} />
         <h4>Time Remaining:{timeRemaining}</h4>
         <button onClick={startGame} disabled={gameRunning}>
           Start
